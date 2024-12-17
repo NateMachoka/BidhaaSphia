@@ -1,0 +1,42 @@
+import mongoose from 'mongoose';
+
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Product name is required'],
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    price: {
+      type: Number,
+      required: [true, 'Product price is required'],
+      min: [0, 'Price must be greater than 0'],
+    },
+    quantity: {
+      type: Number,
+      required: [true, 'Product quantity is required'],
+      min: [0, 'Quantity must at least be 1'],
+    },
+    category: {
+      type: String,
+      trim: true,
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // Link to User schema
+      required: true,
+    },
+  },
+  {
+    timestamps: true, // Automatically add createdAt and updatedAt fields
+  },
+);
+
+const Product = mongoose.model('Product', productSchema);
+
+export default Product;
+
