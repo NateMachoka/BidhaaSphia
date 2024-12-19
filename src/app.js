@@ -4,6 +4,7 @@ import connectDB from './config/db.js';
 import { connectRedis } from './config/redis.js';
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 import { errorHandler, notFound } from './middlewares/errorMiddleware.js';
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.get('/', (req, res) => res.send('Welcome to BidhaaSphia!'));
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Error handling middleware
 app.use(notFound);

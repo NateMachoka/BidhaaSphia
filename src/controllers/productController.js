@@ -118,9 +118,10 @@ export const searchProductsByName = async (req, res) => {
       return res.status(400).json({ message: 'Search query "name" is required.' });
     }
 
-    const products = await Product.find({
-      name: { $regex: name, $options: 'i' }, // Case-insensitive match
-    });
+    const products = await Product.find(
+      { $text: { $search: name } }, // Perform a text search
+      { score: { $meta: 'textScore' } }, // Include the relevance score
+    ).sort({ score: { $meta: 'textScore' } }); // Sort by relevance
 
     if (products.length === 0) {
       return res.status(404).json({ message: 'No products found with the given name.' });
@@ -128,6 +129,7 @@ export const searchProductsByName = async (req, res) => {
 
     res.json(products);
   } catch (error) {
+    console.error('Error searching products:', error);
     res.status(500).json({ message: error.message });
   }
 };

@@ -36,7 +36,17 @@ const productSchema = new mongoose.Schema(
   },
 );
 
+// Add text index to product schema
+productSchema.index({ name: 'text', description: 'text' });
+
+// Middleware to ensure category is saved in lowercase
+productSchema.pre('save', function standardizeCategory(next) {
+  if (this.category) {
+    this.category = this.category.toLowerCase();
+  }
+  next();
+});
+
 const Product = mongoose.model('Product', productSchema);
 
 export default Product;
-
