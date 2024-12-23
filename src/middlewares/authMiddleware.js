@@ -11,9 +11,10 @@ const protect = asyncHandler(async (req, res, next) => {
     try {
       // Extract token from the Authorization header
       [, token] = req.headers.authorization.split(' ');
+      console.log('Extracted Token:', token);
       // Decode the token and verify it using the secret key
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+      console.log('Decoded JWT:', decoded);
       // Attach the user data (excluding password) to the request object
       req.user = await User.findById(decoded.id).select('-password'); // Exclude password field for security
 
@@ -21,6 +22,7 @@ const protect = asyncHandler(async (req, res, next) => {
         res.status(401).json({ success: false, message: 'User not found' });
         return;
       }
+      console.log('Authenticated User:', req.user);
 
       // Continue to the next middleware or route handler
       next();

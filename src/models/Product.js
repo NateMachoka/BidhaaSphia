@@ -16,9 +16,9 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Product price is required'],
       min: [0, 'Price must be greater than 0'],
     },
-    quantity: {
+    stock: {
       type: Number,
-      required: [true, 'Product quantity is required'],
+      required: [true, 'Product stock is required'],
       min: [0, 'Quantity must at least be 1'],
     },
     category: {

@@ -1,4 +1,6 @@
-import { addToCart, viewCart, removeFromCart } from '../services/cartServices.js';
+import {
+  addToCart, viewCart, removeFromCart, removeAllFromCart,
+} from '../services/cartServices.js';
 
 export const addToCartController = async (req, res) => {
   try {
@@ -15,10 +17,23 @@ export const addToCartController = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Product ID and quantity are required.' });
     }
 
-    const { name } = await addToCart(userId, productId, quantity); // Use extracted userId
-    res.status(200).json({ success: true, message: `${name} has been added to the cart.` });
+    // Add to cart and handle possible stock errors
+    const { name, quantity: updatedQuantity } = await addToCart(userId, productId, quantity);
+
+    // Success response
+    res.status(200).json({
+      success: true,
+      message: `${name} has been added to the cart. Current quantity: ${updatedQuantity}.`,
+    });
   } catch (err) {
     console.error('Error in addToCartController:', err.message);
+
+    // Check for specific stock-related error
+    if (err.message.includes('Cannot add more than')) {
+      return res.status(400).json({ success: false, message: err.message });
+    }
+
+    // Generic error message
     res.status(400).json({ success: false, message: err.message });
   }
 };
@@ -27,7 +42,8 @@ export const viewCartController = async (req, res) => {
   try {
     const { id: userId } = req.user;
 
-    const cart = await viewCart(userId); // Fetch cart for the user
+    // Fetch cart for the user
+    const cart = await viewCart(userId);
     res.status(200).json({ success: true, data: cart });
   } catch (err) {
     console.error('Error in viewCartController:', err.message);
@@ -40,10 +56,23 @@ export const removeFromCartController = async (req, res) => {
     const { id: userId } = req.user;
     const { productId } = req.body;
 
-    const name = await removeFromCart(userId, productId); // Remove product from the cart
+    // Remove product from the cart
+    const name = await removeFromCart(userId, productId);
     res.status(200).json({ success: true, message: `${name} has been removed from the cart.` });
   } catch (err) {
     console.error('Error in removeFromCartController:', err.message);
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+export const removeAllFromCartController = async (req, res) => {
+  try {
+    const { id: userId } = req.user;
+
+    const message = await removeAllFromCart(userId); // Clear all items from the cart
+    res.status(200).json({ success: true, message: `${message} have been removed from the cart.` });
+  } catch (err) {
+    console.error('Error in removeAllFromCartController:', err.message);
     res.status(400).json({ success: false, message: err.message });
   }
 };

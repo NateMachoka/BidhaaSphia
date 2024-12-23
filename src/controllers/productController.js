@@ -6,21 +6,21 @@ import Product from '../models/Product.js';
 export const createProduct = async (req, res) => {
   try {
     const {
-      name, description, price, quantity, category,
+      name, description, price, stock, category,
     } = req.body;
     // Log input to check
     console.log('Product Data:', req.body);
 
     // Validate required fields
-    if (!name || !price || !quantity) {
-      return res.status(400).json({ message: 'Name, price, and quantity are required.' });
+    if (!name || !price || stock === undefined) {
+      return res.status(400).json({ message: 'Name, price, and stock are required.' });
     }
 
     const product = new Product({
       name,
       description,
       price,
-      quantity,
+      stock,
       category,
       user: req.user.id, // Logged-in user (admin creating product)
     });
@@ -68,7 +68,7 @@ export const getProductById = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const {
-      name, description, price, quantity, category,
+      name, description, price, stock, category,
     } = req.body;
     const product = await Product.findById(req.params.id);
 
@@ -76,7 +76,7 @@ export const updateProduct = async (req, res) => {
       product.name = name || product.name;
       product.description = description || product.description;
       product.price = price !== undefined ? price : product.price;
-      product.quantity = quantity !== undefined ? quantity : product.quantity;
+      product.stock = stock !== undefined ? stock : product.stock;
       product.category = category || product.category;
 
       const updatedProduct = await product.save();
