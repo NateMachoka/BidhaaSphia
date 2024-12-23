@@ -1,16 +1,23 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const getMPesaAccessToken = async () => {
   try {
+    const apiKey = process.env.MPESA_API_KEY;
+    const apiSecret = process.env.MPESA_API_SECRET;
+    const credentials = `${apiKey}:${apiSecret}`;
+    const base64Credentials = Buffer.from(credentials).toString('base64'); // Base64 encode the credentials
+
     const response = await axios.get(
       'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
       {
         headers: {
-          Authorization:
-            'Basic eVRKMEFBVk9OcExubGJBTXpHSzZ6eFpleE1UeEJPbkoycUdLdHV1Wk1HSlJSVUZEOmM1NFFpSjlrN0FQSVRqWjZVVlFCeEJCSnZnRVFlWGMzbFBiQldvMFQ0U3ExSzJXOVZqeW1ycWhqTW0zNlFoN0g=',
+          Authorization: `Basic ${base64Credentials}`,
         },
-      },
+      }
     );
     return response.data.access_token;
   } catch (error) {
