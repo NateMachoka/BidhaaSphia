@@ -1,11 +1,13 @@
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import { redisClient } from '../config/redis.js';
+import { initiateMPesaPayment } from '../services/paymentService.js';
 
 const placeOrderController = async (req, res) => {
   try {
     console.log("Request body:", req.body);
     const { id: userId } = req.user;
+    const { phoneNumber } = req.body; // Add phoneNumber for MPesa
 
     const cartKey = `cart:${userId}`;
     const cartItems = await redisClient.hGetAll(cartKey);
@@ -29,19 +31,10 @@ const placeOrderController = async (req, res) => {
         throw new Error(`Insufficient stock for ${product.name}.`);
       }
 
-      console.log(`Before update: ${product.name}, stock: ${product.stock}`);
       product.stock -= quantity;
-      console.log(`After update: ${product.name}, stock: ${product.stock}`);
+      product.stock = Math.max(0, product.stock);
 
-      if (product.stock < 0) {
-        product.stock = 0;
-      }
-
-      try {
-        await product.save();
-      } catch (error) {
-        throw new Error(`Failed to save product ${product.name}: ${error.message}`);
-      }
+      await product.save();
 
       return {
         productId: product._id,
@@ -67,7 +60,14 @@ const placeOrderController = async (req, res) => {
 
     await redisClient.del(cartKey);
 
-    res.status(201).json({ message: 'Order placed successfully.', order });
+    // Initiate MPesa payment
+    const paymentResponse = await initiateMPesaPayment(order, phoneNumber);
+
+    res.status(201).json({
+      message: 'Order placed successfully. Payment initiated.',
+      order,
+      paymentResponse,
+    });
   } catch (error) {
     console.error('Error placing order:', error.message);
     res.status(500).json({ message: 'Internal server error.' });
@@ -130,4 +130,57 @@ const cancelOrderController = async (req, res) => {
   }
 };
 
-export { placeOrderController, viewOrdersController, cancelOrderController };
+const processMpesaCallback = async (req, res) => {
+  try {
+    const callbackData = req.body;
+
+    // Log the data for debugging
+    console.log('M-Pesa Callback Data:', callbackData);
+
+    // Extract relevant data from callback
+    const resultCode = callbackData.Body.stkCallback.ResultCode; // 0 is success, others are failure
+    const resultDesc = callbackData.Body.stkCallback.ResultDesc;
+    const transactionId = callbackData.Body.stkCallback.TransactionID;
+    const amount = callbackData.Body.stkCallback.Amount;
+    const phoneNumber = callbackData.Body.stkCallback.PhoneNumber;
+
+    // Find the order using the transactionId
+    const order = await Order.findOne({ transactionId });
+
+    if (!order) {
+      return res.status(404).send('Order not found');
+    }
+
+    if (resultCode === 0) {
+      // Payment successful
+      order.status = 'Paid';
+      order.paymentDetails = {
+        transactionId,
+        amount,
+        phoneNumber,
+        resultDesc,
+      };
+      await order.save();
+      console.log('Payment successful, order updated:', order);
+    } else {
+      // Payment failed
+      order.status = 'Failed';
+      order.paymentDetails = {
+        transactionId,
+        resultDesc,
+      };
+      await order.save();
+      console.log('Payment failed:', resultDesc);
+    }
+
+    // Send response back to M-Pesa with status 200 to acknowledge receipt
+    res.status(200).send('Callback processed successfully');
+  } catch (error) {
+    console.error('Error processing callback:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+export {
+  placeOrderController, viewOrdersController, cancelOrderController, processMpesaCallback,
+};
