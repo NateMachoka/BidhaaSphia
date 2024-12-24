@@ -25,24 +25,36 @@ const getMPesaAccessToken = async () => {
   }
 };
 
+// Generate MPesa Password dynamically
+const generateMPesaPassword = () => {
+  const businessShortCode = process.env.MPESA_BUSINESS_SHORTCODE; // Retrieve from .env
+  const passkey = process.env.MPESA_PASSKEY; // Retrieve from .env
+  const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, ''); // Generate timestamp (e.g., 20240101235959)
+  
+  // Base64 encode: BusinessShortCode + Passkey + Timestamp
+  const password = Buffer.from(`${businessShortCode}${passkey}${timestamp}`).toString('base64');
+  return { password, timestamp };
+};
+
 // MPesa Payment Initiation
 export const initiateMPesaPayment = async (order, phoneNumber) => {
   try {
     const accessToken = await getMPesaAccessToken();
     const transactionId = uuidv4(); // Unique identifier for the transaction
+    const { password, timestamp } = generateMPesaPassword(); // Generate password and timestamp dynamically
 
     const response = await axios.post(
       'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
       {
-        BusinessShortCode: '174379',
-        Password: '*q4nbkUeBU4pinw',
-        Timestamp: new Date().toISOString().replace(/[-T:.Z]/g, ''),
+        BusinessShortCode: process.env.MPESA_BUSINESS_SHORTCODE, // BusinessShortCode from .env
+        Password: password, // Dynamically generated password
+        Timestamp: timestamp, // Dynamically generated timestamp
         TransactionType: 'CustomerPayBillOnline',
         Amount: order.totalPrice,
         PartyA: phoneNumber,
-        PartyB: '174379',
+        PartyB: process.env.MPESA_BUSINESS_SHORTCODE, // PartyB is usually the same as BusinessShortCode
         PhoneNumber: phoneNumber,
-        CallBackURL: 'https://localhost:5000/api/orders/mpesa-callback',
+        CallBackURL: 'https://425e-102-209-90-18.ngrok-free.app/api/orders/mpesa-callback',
         AccountReference: transactionId,
         TransactionDesc: `Payment for Order ${order._id}`,
       },
@@ -50,7 +62,7 @@ export const initiateMPesaPayment = async (order, phoneNumber) => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      },
+      }
     );
 
     return response.data;
