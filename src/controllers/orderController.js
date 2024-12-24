@@ -1,5 +1,6 @@
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
+import User from '../models/User.js';
 import { redisClient } from '../config/redis.js';
 import { initiateMPesaPayment } from '../services/paymentService.js';
 
@@ -7,7 +8,14 @@ const placeOrderController = async (req, res) => {
   try {
     console.log("Request body:", req.body);
     const { id: userId } = req.user;
-    const { phoneNumber } = req.body; // Add phoneNumber for MPesa
+
+    // Fetch user details, including phone number
+    const user = await User.findById(userId);
+    if (!user || !user.phoneNumber) {
+      return res.status(400).json({ message: 'User does not have a registered phone number.' });
+    }
+
+    const { phoneNumber } = user;
 
     const cartKey = `cart:${userId}`;
     const cartItems = await redisClient.hGetAll(cartKey);

@@ -1,6 +1,7 @@
 import express from 'express';
-import { registerUser, loginUser } from '../controllers/userController.js';
+import { registerUser, loginUser, updatePhoneNumber } from '../controllers/userController.js';
 import { authenticate, authorize, publicRoute, protectedRoute, adminOnlyRoute } from '../middlewares/authController.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -8,6 +9,7 @@ const router = express.Router();
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.get('/public', publicRoute);
+router.put('/update-phone', protect, updatePhoneNumber);
 
 // Protected routes
 router.get('/protected', authenticate, protectedRoute);

@@ -9,37 +9,38 @@ const isValidEmail = (email) => {
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phoneNumber } = req.body;
 
     // Validate input fields
     if (!name) return res.status(400).json({ error: 'Name is required' });
     if (!email) return res.status(400).json({ error: 'Email is required' });
     if (!password) return res.status(400).json({ error: 'Password is required' });
+    if (!phoneNumber) return res.status(400).json({ error: 'Phone number is required' });
 
     // Validate email format
     if (!isValidEmail(email)) return res.status(400).json({ error: 'Invalid email format' });
+
+    // Validate phone number (optional regex for format)
+    if (!/^\d+$/.test(phoneNumber)) return res.status(400).json({ error: 'Invalid phone number format' });
 
     // Validate password strength
     if (password.length < 8) {
       return res.status(400).json({ error: 'Password must be at least 8 characters long' });
     }
 
-    // Check if the user already exists by email
+    // Check for existing users
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ error: 'Email already in use' });
 
-    // Check if the username is unique (optional)
-    const existingUserByName = await User.findOne({ name });
-    if (existingUserByName) return res.status(400).json({ error: 'Username already in use' });
-
     // Create and save the new user
-    const user = new User({ name, email, password });
+    const user = new User({ name, email, password, phoneNumber });
     await user.save();
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 
 // Login user
 export const loginUser = async (req, res) => {
@@ -55,6 +56,22 @@ export const loginUser = async (req, res) => {
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
     res.status(200).json({ message: 'Login successful', token });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const updatePhoneNumber = async (req, res) => {
+  try {
+    const { id: userId } = req.user;
+    const { phoneNumber } = req.body;
+
+    if (!phoneNumber || !/^\d+$/.test(phoneNumber)) {
+      return res.status(400).json({ message: 'Invalid phone number format.' });
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { phoneNumber }, { new: true });
+    res.status(200).json({ message: 'Phone number updated successfully.', user });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
