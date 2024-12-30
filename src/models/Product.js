@@ -22,8 +22,9 @@ const productSchema = new mongoose.Schema(
       min: [0, 'Quantity must at least be 1'],
     },
     category: {
-      type: String,
-      trim: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category', // Reference to the Category model
+      required: true,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

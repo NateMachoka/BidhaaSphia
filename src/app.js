@@ -7,7 +7,9 @@ import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 import { errorHandler, notFound } from './middlewares/errorMiddleware.js';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -15,6 +17,9 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // Parse JSON requests
+app.use(cors({
+  origin: 'http://localhost:3000' // only allow requets from frontend on port 3000
+}));
 
 // Initialize Redis and MongoDB
 connectDB();
@@ -25,6 +30,7 @@ app.get('/', (req, res) => res.send('Welcome to BidhaaSphia!'));
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);

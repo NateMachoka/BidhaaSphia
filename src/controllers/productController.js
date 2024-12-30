@@ -1,4 +1,5 @@
 import Product from '../models/Product.js';
+import Category from '../models/Category.js';
 
 // @desc    Create a new product
 // @route   POST /api/products
@@ -6,22 +7,31 @@ import Product from '../models/Product.js';
 export const createProduct = async (req, res) => {
   try {
     const {
-      name, description, price, stock, category,
+      name, description, price, stock, category, icon,
     } = req.body;
+
     // Log input to check
     console.log('Product Data:', req.body);
 
     // Validate required fields
-    if (!name || !price || stock === undefined) {
-      return res.status(400).json({ message: 'Name, price, and stock are required.' });
+    if (!name || !price || stock === undefined || !category) {
+      return res.status(400).json({ message: 'Name, price, stock, and category are required.' });
     }
 
+    // Check if category exists
+    const categoryExists = await Category.findById(category);
+
+    if (!categoryExists) {
+      return res.status(400).json({ message: 'Category does not exist.' });
+    }
+
+    // Create the product
     const product = new Product({
       name,
       description,
       price,
       stock,
-      category,
+      category, // Use category ID
       user: req.user.id, // Logged-in user (admin creating product)
     });
 
@@ -38,12 +48,16 @@ export const createProduct = async (req, res) => {
 // @access  Public
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({})
+      .populate('category', 'name icon') // Populate category fields
+      .exec();
+
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // @desc    Get a product by ID
 // @route   GET /api/products/:id
