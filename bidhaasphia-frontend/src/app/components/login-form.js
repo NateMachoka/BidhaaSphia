@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from "../components/ui/button"
 import { FormInput } from "../components/ui/form-input"
 import { Alert, AlertDescription } from "../components/ui/alert"
+import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 
 export function LoginForm() {
@@ -22,22 +23,16 @@ export function LoginForm() {
       return
     }
 
-    try {
-      const response = await fetch('http://localhost:5000/api/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await response.json()
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false, // Prevent automatic redirection
+    })
 
-      if (response.ok) {
-        localStorage.setItem('token', data.token)
-        router.push('/dashboard')
-      } else {
-        setError(data.message || 'Invalid credentials')
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again later.')
+    if (result?.error) {
+      setError(result.error)
+    } else {
+      router.push('/dashboard')
     }
   }
 

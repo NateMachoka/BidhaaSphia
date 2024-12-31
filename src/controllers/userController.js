@@ -46,33 +46,42 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ message: 'Email and password are required' });
-
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) return res.status(401).json({ message: 'Invalid credentials' });
-
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.status(200).json({ message: 'Login successful', token });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-};
-
-export const updatePhoneNumber = async (req, res) => {
-  try {
-    const { id: userId } = req.user;
-    const { phoneNumber } = req.body;
-
-    if (!phoneNumber || !/^\d+$/.test(phoneNumber)) {
-      return res.status(400).json({ message: 'Invalid phone number format.' });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const user = await User.findByIdAndUpdate(userId, { phoneNumber }, { new: true });
-    res.status(200).json({ message: 'Phone number updated successfully.', user });
+    // Find the user in the database
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Validate the password
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    // Send response with token and user details
+    res.status(200).json({
+      message: 'Login successful',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
+    // Handle server errors
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
