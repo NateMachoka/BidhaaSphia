@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 export const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.error('No token provided in Authorization header');
     return res.status(401).json({ error: 'No token provided' });
   }
 
@@ -13,16 +14,9 @@ export const authenticate = (req, res, next) => {
     req.user = decoded; // Attach decoded token data to req.user
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Token is not valid' });
+    console.error('Token verification failed:', error.message);
+    return res.status(401).json({ error: 'Token is not valid or has expired' });
   }
-};
-
-// Middleware to authorize roles (e.g., admin)
-export const authorize = (role) => (req, res, next) => {
-  if (!req.user || req.user.role !== role) {
-    return res.status(403).json({ error: 'Access denied. Admins only' });
-  }
-  next();
 };
 
 // Public route handler (no auth required)

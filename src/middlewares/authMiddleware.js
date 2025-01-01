@@ -35,13 +35,51 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Authorize user roles (e.g., admin only)
+// Authorize user roles (e.g., admin only
 const authorize = (...roles) => (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
   if (!roles.includes(req.user.role)) {
-    res.status(403).json({ success: false, message: 'User role not authorized for this action' });
-    return;
+    console.error(`User role ${req.user.role} not authorized`);
+    return res.status(403).json({ error: 'Access denied' });
   }
   next();
 };
 
-export { protect, authorize };
+// Refresh token route
+const refreshToken = asyncHandler(async (req, res) => {
+  const { token } = req.body;
+
+  // Check if refresh token exists
+  if (!token) {
+    return res.status(400).json({ success: false, message: 'No refresh token provided' });
+  }
+
+  try {
+    // Verify refresh token
+    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+
+    // Find the user associated with the refresh token
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'User not found' });
+    }
+
+    // Issue a new access token
+    const newAccessToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '3h' }, // Access token expiration time
+    );
+
+    // Return the new access token
+    res.json({ success: true, accessToken: newAccessToken });
+  } catch (error) {
+    console.error('Error verifying refresh token:', error);
+    res.status(403).json({ success: false, message: 'Invalid refresh token' });
+  }
+});
+
+export { protect, authorize, refreshToken };

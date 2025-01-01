@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance'; // Import the custom Axios instance
 
 const UserProfile = () => {
   const { data: session } = useSession();
@@ -10,15 +10,13 @@ const UserProfile = () => {
   const [form, setForm] = useState({});
 
   useEffect(() => {
-    if (session) {
+    if (session?.accessToken) {
       // Fetch user profile data on load
-      axios
-        .get('http://localhost:5000/api/users/profile', {
-          headers: { Authorization: `Bearer ${session.token}` },
-        })
+      axiosInstance
+        .get('/users/profile') // Base URL is already defined in the Axios instance
         .then((response) => {
           setProfile(response.data);
-          setForm(response.data);  // Initialize form with fetched data
+          setForm(response.data); // Initialize form with fetched data
         })
         .catch((error) => console.error('Error fetching profile:', error));
     }
@@ -31,23 +29,18 @@ const UserProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Ensure that the token is available before making the request
-    const token = session?.token || localStorage.getItem('token');
-    
-    if (!token) {
+
+    if (!session?.accessToken) {
       alert('Token is missing');
       return;
     }
 
     // Send the updated form data to the backend
-    axios
-      .put('http://localhost:5000/api/users/profile', form, {
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      })
+    axiosInstance
+      .put('/users/profile', form) // Token is automatically added via Axios interceptor
       .then((response) => {
         alert('Profile updated successfully');
-        setProfile(response.data.user);  // Update local profile with the response data
+        setProfile(response.data.user); // Update local profile with the response data
       })
       .catch((error) => {
         alert('Error updating profile');

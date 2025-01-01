@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from "../components/ui/button"
 import { FormInput } from "../components/ui/form-input"
 import { Alert, AlertDescription } from "../components/ui/alert"
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'  // Import getSession here
 import Link from 'next/link'
 
 export function LoginForm() {
@@ -15,26 +15,31 @@ export function LoginForm() {
   const router = useRouter()
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError('');
 
     if (!email || !password) {
-      setError('Please fill in both fields')
-      return
+      setError('Please fill in both fields');
+      return;
     }
 
     const result = await signIn('credentials', {
       email,
       password,
-      redirect: false, // Prevent automatic redirection
-    })
+      redirect: false,
+    });
 
     if (result?.error) {
-      setError(result.error)
+      setError(result.error);
     } else {
-      router.push('/dashboard')
+      const session = await getSession(); // Get updated session with the token
+      if (session?.accessToken) {
+        // Store token if needed
+        localStorage.setItem('accessToken', session.accessToken);
+      }
+      router.push('/dashboard');
     }
-  }
+  };
 
   return (
     <form onSubmit={handleLogin} className="space-y-4">
@@ -64,5 +69,5 @@ export function LoginForm() {
         Don't have an account? <Link href="/register" className="text-primary hover:underline">Register</Link>
       </p>
     </form>
-  )
+  );
 }

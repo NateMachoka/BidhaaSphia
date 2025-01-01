@@ -44,28 +44,33 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      // If user is defined (during login), add user info to the JWT
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
-        token.role = user.role; // Include role if needed
+        token.role = user.role; // Include role
         token.accessToken = user.token; // Store the token
       }
       return token;
     },
     async session({ session, token }) {
-      // Add token information to the session
-      session.user.id = token.id;
-      session.user.name = token.name;
-      session.user.email = token.email;
-      session.user.role = token.role; // Add role if needed
-      session.accessToken = token.accessToken; // Include access token
+      session.user = {
+        id: token.id,
+        name: token.name,
+        email: token.email,
+        role: token.role,
+      };
+      session.accessToken = token.accessToken; // access token
       return session;
     },
   },
 };
 
-// Named exports for GET and POST methods
-export const GET = (req, res) => NextAuth(req, res, authOptions);
-export const POST = (req, res) => NextAuth(req, res, authOptions);
+// Named exports for HTTP methods
+export async function GET(req, res) {
+  return NextAuth(req, res, authOptions);
+}
+
+export async function POST(req, res) {
+  return NextAuth(req, res, authOptions);
+}
