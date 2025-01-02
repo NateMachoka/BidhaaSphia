@@ -2,6 +2,7 @@
 
 import { SessionProvider } from 'next-auth/react';
 import React from 'react';
+import { Navbar } from './components/Navbar';
 import './global.css';
 
 export default function RootLayout({ children }) {
@@ -9,7 +10,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <SessionProvider>
-          <div>{children}</div>
+          <Navbar />
+          <main className="pt-[100px]">{children}</main> {/* Ensures no overlap with the header */}
         </SessionProvider>
       </body>
     </html>

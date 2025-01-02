@@ -2,15 +2,19 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import axiosInstance from '../utils/axiosInstance';
 
 export const Categories = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await fetch('http://localhost:5000/api/categories');
-      const data = await response.json();
-      setCategories(data.categories); // Access the categories key
+      try {
+        const response = await axiosInstance.get('/categories');
+        setCategories(response.data.categories); // Access the categories key
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
     };
     fetchCategories();
   }, []);

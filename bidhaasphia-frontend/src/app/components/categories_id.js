@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import axiosInstance from '../../utils/axiosInstance';
 import { SearchBar } from '../../components/SearchBar';
 
 const CategoryPage = () => {
@@ -11,13 +12,15 @@ const CategoryPage = () => {
   useEffect(() => {
     if (id) {
       const fetchCategory = async () => {
-        const categoryResponse = await fetch(`/api/categories/${id}`);
-        const categoryData = await categoryResponse.json();
-        setCategory(categoryData);
+        try {
+          const categoryResponse = await axiosInstance.get(`/categories/${id}`);
+          setCategory(categoryResponse.data);
 
-        const productsResponse = await fetch(`/api/products?category=${id}`);
-        const productsData = await productsResponse.json();
-        setProducts(productsData);
+          const productsResponse = await axiosInstance.get(`/products?category=${id}`);
+          setProducts(productsResponse.data);
+        } catch (error) {
+          console.error('Error fetching category data:', error);
+        }
       };
 
       fetchCategory();
