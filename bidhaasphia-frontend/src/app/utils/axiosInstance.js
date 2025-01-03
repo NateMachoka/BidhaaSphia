@@ -23,17 +23,24 @@ axiosInstance.interceptors.request.use(
 // Function to refresh the token
 const refreshToken = async () => {
   try {
-    const response = await axios.post('http://localhost:5000/api/auth/refresh', {
-      token: localStorage.getItem('refreshToken'), // Send the refresh token
+    const refreshToken = localStorage.getItem('refreshToken');
+    console.log('Sending refresh token:', refreshToken); // Log before the API call
+
+    const response = await axios.post('http://localhost:5000/api/users/refresh', {
+      token: refreshToken, // Send the refresh token
     });
+
     const { accessToken } = response.data;
+    console.log('Received new access token:', accessToken); // Log the received access token
+
     localStorage.setItem('accessToken', accessToken); // Update the access token
     return accessToken;
   } catch (error) {
-    console.error('Error refreshing token:', error);
+    console.error('Error refreshing token:', error.response?.data || error.message); // Log error details
     throw error;
   }
 };
+
 
 // Add a response interceptor to handle token expiry
 axiosInstance.interceptors.response.use(

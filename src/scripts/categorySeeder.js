@@ -17,7 +17,7 @@ const seedCategories = async () => {
       { category: 'sports and fitness', icon: 'sports-icon.png' },
       { category: 'furniture', icon: 'furniture-icon.png' },
       { category: 'health and beauty', icon: 'health-icon.png' },
-      { category: 'agric and garden', icon: 'agric-icon.png' },
+      { category: 'agriculture and garden', icon: 'agric-icon.png' },
       { category: 'personal services', icon: 'services-icon.png' },
       { category: 'kitchen and dining', icon: 'kitchen-icon.png' },
     ];

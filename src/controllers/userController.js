@@ -117,3 +117,14 @@ export const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// Logout user
+export const logoutUser = (req, res) => {
+  try {
+    // Clear the token in the HTTP-only cookies
+    res.clearCookie('token'); // Clear the cookie that stores the token
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};

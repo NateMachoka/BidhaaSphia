@@ -53,11 +53,13 @@ const refreshToken = asyncHandler(async (req, res) => {
 
   // Check if refresh token exists
   if (!token) {
+    console.log('No refresh token provided');
     return res.status(400).json({ success: false, message: 'No refresh token provided' });
   }
 
   try {
     // Verify refresh token
+    console.log('Verifying refresh token...');
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
 
     // Find the user associated with the refresh token

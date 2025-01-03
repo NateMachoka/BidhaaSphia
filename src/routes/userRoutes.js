@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, getUserProfile, updateUserProfile } from '../controllers/userController.js';
+import { registerUser, loginUser, getUserProfile, updateUserProfile, logoutUser } from '../controllers/userController.js';
 import { authenticate, publicRoute, protectedRoute, adminOnlyRoute } from '../middlewares/authController.js';
 import { protect, authorize, refreshToken } from '../middlewares/authMiddleware.js';
 
@@ -11,6 +11,9 @@ router.post('/login', loginUser);
 router.get('/public', publicRoute);
 router.put('/profile', protect, updateUserProfile);
 router.get('/profile', protect, getUserProfile);
+
+// Logout route
+router.post('/logout', protect, logoutUser);
 
 // Protected routes
 router.get('/protected', authenticate, protectedRoute);
