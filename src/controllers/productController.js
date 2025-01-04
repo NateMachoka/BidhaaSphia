@@ -48,8 +48,13 @@ export const createProduct = async (req, res) => {
 // @access  Public
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({})
-      .populate('category', 'name icon') // Populate category fields
+    const { category } = req.query;
+
+    const query = {};
+    if (category) query.category = category;
+
+    const products = await Product.find(query)
+      .populate("category", "name icon")
       .exec();
 
     res.json(products);
@@ -57,6 +62,7 @@ export const getProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 // @desc    Get a product by ID
@@ -145,5 +151,28 @@ export const searchProductsByName = async (req, res) => {
   } catch (error) {
     console.error('Error searching products:', error);
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const getTopDeals = async (req, res) => {
+  try {
+    const products = await Product.find();
+    // Pick random products as "top deals"
+    const topDeals = products.sort(() => 0.5 - Math.random()).slice(0, 10);
+    res.json({ deals: topDeals });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching top deals', error });
+  }
+};
+
+// Fetch most popular products (mocked for now)
+export const getMostPopular = async (req, res) => {
+  try {
+    const products = await Product.find();
+    // Pick random products as "most popular"
+    const mostPopular = products.sort(() => 0.5 - Math.random()).slice(0, 12);
+    res.json({ products: mostPopular });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching most popular products', error });
   }
 };

@@ -18,10 +18,14 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // Parse JSON requests
-app.use(cors({
-  origin: 'http://localhost:3000' // only allow requets from frontend on port 3000
-}));
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
+app.use(cors(corsOptions)); // Enable CORS
 // Initialize Redis and MongoDB
 connectDB();
 connectRedis();

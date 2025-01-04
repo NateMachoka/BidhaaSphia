@@ -8,18 +8,56 @@ connectDB();
 const seedCategories = async () => {
   try {
     const categories = [
-      { category: 'clothes', icon: 'clothes-icon.png' },
-      { category: 'foods', icon: 'foods-icon.png' },
-      { category: 'electronics', icon: 'electronics-icon.png' },
-      { category: 'drinks and beverages', icon: 'drinks-icon.png' },
-      { category: 'auto and parts', icon: 'auto-icon.png' },
-      { category: 'toys and hobbies', icon: 'toys-icon.png' },
-      { category: 'sports and fitness', icon: 'sports-icon.png' },
-      { category: 'furniture', icon: 'furniture-icon.png' },
-      { category: 'health and beauty', icon: 'health-icon.png' },
-      { category: 'agriculture and garden', icon: 'agric-icon.png' },
-      { category: 'personal services', icon: 'services-icon.png' },
-      { category: 'kitchen and dining', icon: 'kitchen-icon.png' },
+      {
+        category: 'clothes',
+        icon: 'https://img.icons8.com/color/48/oNJflbRCCnsP/clothes.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/oNJflbRCCnsP/clothes">Clothes</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
+      {
+        category: 'foods',
+        icon: 'https://img.icons8.com/color/48/5s2gU9vF5Tyl/healthy-food.png',
+        attribution: '<a href="https://www.flaticon.com/free-icons/healthy-food" title="healthy-food icons">Healthy-food icons created by Freepik - Flaticon</a>',
+      },
+      {
+        category: 'electronics',
+        icon: 'https://img.icons8.com/color/48/sO7DzMGVLleD/electronic-products.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/sO7DzMGVLleD/electronic-products">Electronic Products</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
+      {
+        category: 'drinks_and_beverages',
+        icon: 'https://img.icons8.com/color/48/Luh5Fgf8dUI7/wine-and-glass.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/Luh5Fgf8dUI7/wine-and-glass">Wine And Glass</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
+      {
+        category: 'auto_and_parts',
+        icon: 'https://img.icons8.com/color/48/XUJlCZR5Kdwk/car-service.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/XUJlCZR5Kdwk/car-service">Car Service</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
+      {
+        category: 'toys_and_hobbies',
+        icon: 'https://img.icons8.com/color/48/l19wuXnsjOHD/toys.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/l19wuXnsjOHD/toys">Toys</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
+      {
+        category: 'sports_and_fitness',
+        icon: 'https://img.icons8.com/color/48/JvRnjqoqMC6B/bench-fitness.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/JvRnjqoqMC6B/bench-fitness">Bench Fitness</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
+      {
+        category: 'furniture',
+        icon: 'https://img.icons8.com/color/48/Y1GJRHnyYIKy/furniture-and-household.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/Y1GJRHnyYIKy/furniture-and-household">Furniture And Household</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
+      {
+        category: 'health_and_beauty',
+        icon: 'https://img.icons8.com/color/48/1wy6FKSIfdEC/perfume-bottle.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/1wy6FKSIfdEC/perfume-bottle">Perfume Bottle</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
+      {
+        category: 'agriculture_and_garden',
+        icon: 'https://img.icons8.com/color/48/GK2k4UvSHk9b/garden.png',
+        attribution: '<a target="_blank" href="https://icons8.com/icon/GK2k4UvSHk9b/garden">Garden</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>',
+      },
     ];
 
     await Category.deleteMany(); // Clear existing categories

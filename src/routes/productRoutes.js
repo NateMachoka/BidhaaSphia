@@ -6,6 +6,8 @@ import {
   updateProduct,
   deleteProduct,
   searchProductsByName,
+  getTopDeals,
+  getMostPopular,
 } from '../controllers/productController.js';
 import { protect, authorize } from '../middlewares/authMiddleware.js'; // Ensure authenticated routes
 
@@ -17,7 +19,9 @@ router.route('/search').get(searchProductsByName); // Public: Search products by
 // CRUD Operations
 router.route('/')
   .post(protect, authorize('admin'), createProduct) // Admin-only access to create products
-  .get(getProducts); // Public: View all products
+    .get(getProducts); // Public: View all products
+router.get('/top-deals', getTopDeals);
+router.get('/most-popular', getMostPopular);
 
 router.route('/:id')
   .get(getProductById) // Public: View a specific product

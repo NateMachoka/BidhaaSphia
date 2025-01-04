@@ -9,8 +9,12 @@ const categorySchema = new mongoose.Schema(
       trim: true,
     },
     icon: {
-      type: String, // URL or path to the category icon
+      type: String, // URL to the icon
       required: [true, 'Category icon is required'],
+    },
+    attribution: {
+      type: String, // Attribution text or HTML link
+      required: [true, 'Attribution is required'],
     },
   },
   {

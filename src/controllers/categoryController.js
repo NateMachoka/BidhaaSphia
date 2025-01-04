@@ -5,21 +5,22 @@ import Category from '../models/Category.js';
 // @access  Private/Admin
 export const createCategory = async (req, res) => {
   try {
-    const { category, icon } = req.body;
+    const { category, icon, attribution } = req.body;
 
-    if (!category || !icon) {
-      return res.status(400).json({ message: 'Category name and icon are required.' });
+    if (!category || !icon || !attribution) {
+      return res.status(400).json({ message: 'Category name, icon, and attribution are required.' });
     }
 
-    const categoryExists = await Category.findOne({ category: category.toLowerCase() });  // Changed 'name' to 'category'
+    const categoryExists = await Category.findOne({ category: category.toLowerCase() });
 
     if (categoryExists) {
       return res.status(400).json({ message: 'Category already exists.' });
     }
 
     const newCategory = new Category({
-      category,  // Changed 'name' to 'category'
+      category,
       icon,
+      attribution,
     });
 
     const createdCategory = await newCategory.save();

@@ -144,7 +144,7 @@ export const Navbar = () => {
                       href={`/category/${category._id}`}
                       className={`block px-4 py-2 ${active ? 'bg-gray-100' : ''}`}
                     >
-                      {category.name}
+                      {category.category}
                     </Link>
                   )}
                 </Menu.Item>
