@@ -58,7 +58,7 @@ export const getProducts = async (req, res) => {
     if (category) query.category = category;
 
     const products = await Product.find(query)
-      .populate("category", "name icon")
+      .populate("category", "name")
       .exec();
 
     res.json(products);
