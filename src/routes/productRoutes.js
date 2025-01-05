@@ -14,18 +14,19 @@ import { protect, authorize } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// Search route
-router.route('/search').get(searchProductsByName); // Public: Search products by name
-
-router.route('/').get(getProducts); // Public: View all products
+// Public routes
+router.route('/search').get(searchProductsByName);
+router.route('/').get(getProducts);
 router.get('/top-deals', getTopDeals);
 router.get('/most-popular', getMostPopular);
-router.route('/:id').get(getProductById); // Public: View a specific product
+router.route('/:id').get(getProductById);
 
-// CRUD Operations
+// Admin routes
 router.route('/')
-  .post(protect, authorize('admin'), upload.single('image'), createProduct) // Admin-only access to create
-  .put(protect, authorize('admin'), updateProduct) // Admin-only access to update
-  .delete(protect, authorize('admin'), deleteProduct); // Admin-only access to delete
+  .post(protect, authorize('admin'), upload.single('image'), createProduct) // Create product
+  .put(protect, authorize('admin'), updateProduct); // Update product
+
+router.route('/:id')
+  .delete(protect, authorize('admin'), deleteProduct); // Delete product
 
 export default router;

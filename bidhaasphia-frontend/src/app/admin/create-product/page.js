@@ -10,6 +10,7 @@ const AdminCreateProduct = () => {
   const [stock, setStock] = useState('');
   const [category, setCategory] = useState('');
   const [file, setFile] = useState(null);
+  const [user, setUser] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -21,15 +22,28 @@ const AdminCreateProduct = () => {
     formData.append('stock', stock);
     formData.append('category', category);
     formData.append('image', file);
+    formData.append('user', user);
 
     try {
-      const response = await axiosInstance.post('/api/products', formData, {
+      const response = await axiosInstance.post('/products', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Product created:', response.data);
     } catch (error) {
       setError('Error creating product');
-      console.error('Error:', error.response.data);
+      
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        console.error('Error response:', error.response.data);
+      } else if (error.request) {
+        // Request was made, but no response received
+        console.error('Error request:', error.request);
+      } else {
+        // Something else caused the error
+        console.error('Error message:', error.message);
+      }
+
+      console.error('Full error object:', error);
     }
   };
 
@@ -60,6 +74,10 @@ const AdminCreateProduct = () => {
         <div>
           <label>Image</label>
           <input type="file" onChange={(e) => setFile(e.target.files[0])} required />
+        </div>
+        <div>
+          <label>User ID</label>
+          <input type="text" value={user} onChange={(e) => setUser(e.target.value)} required />
         </div>
         <button type="submit">Create Product</button>
       </form>

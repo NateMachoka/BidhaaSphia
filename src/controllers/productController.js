@@ -6,53 +6,24 @@ import Category from '../models/Category.js';
 // @access  Private/Admin
 export const createProduct = async (req, res) => {
   try {
-    const {
-      name, description, price, stock, category, icon,
-    } = req.body;
+    const { name, description, price, stock, category, image } = req.body;
 
-    // Log the request body and file details for debugging
-    console.log('Product Data:', req.body);
-    console.log('Uploaded File:', req.file);
-
-    // Validate required fields
-    if (!name || !price || stock === undefined || !category) {
-      return res.status(400).json({ message: 'Name, price, stock, and category are required.' });
-    }
-
-    // Validate file upload
-    if (!req.file) {
-      return res.status(400).json({ message: 'Product image is required.' });
+    if (!name || !price || !stock || !category || !image) {
+      return res.status(400).json({ message: 'All fields are required.' });
     }
 
     // Check if category exists
     const categoryExists = await Category.findById(category);
     if (!categoryExists) {
-      return res.status(400).json({ message: 'Category does not exist.' });
+      return res.status(400).json({ message: 'Invalid category.' });
     }
 
-    // Construct the image URL
-    const image = `/uploads/${req.file.filename}`;
+    const newProduct = new Product({ name, description, price, stock, category, image });
 
-    // Create the product
-    const product = new Product({
-      name,
-      description,
-      price,
-      stock,
-      category, // Use category ID
-      user: req.user.id, // Logged-in user (admin creating product)
-      image, // Product image
-      icon,
-    });
-
-    // Save the product to the database
-    const createdProduct = await product.save();
-
-    // Send success response
+    const createdProduct = await newProduct.save();
     res.status(201).json(createdProduct);
   } catch (error) {
-    console.error('Error creating product:', error);
-    res.status(500).json({ message: 'Server error. Please try again later.' });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -76,7 +47,6 @@ export const getProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
 // @desc    Get a product by ID

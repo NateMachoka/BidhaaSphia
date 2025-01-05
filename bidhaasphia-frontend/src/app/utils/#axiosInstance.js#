@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Create an Axios instance with a base URL for the API
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api', // You can change this URL if needed
+  baseURL: 'http://localhost:5000/api',
 });
 
 // Add a request interceptor to attach the token from localStorage to the headers

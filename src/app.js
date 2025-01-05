@@ -27,8 +27,9 @@ app.use(express.json()); // Parse JSON requests
 // CORS configuration
 const corsOptions = {
   origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Allow cookies or authentication credentials
 };
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
