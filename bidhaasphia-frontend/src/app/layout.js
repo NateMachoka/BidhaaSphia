@@ -4,21 +4,22 @@ import { SessionProvider } from 'next-auth/react';
 import React from 'react';
 import { Navbar } from './components/Navbar';
 import HomeNavbar from './components/homeNavbar.js';
+import { Footer } from './components/Footer';
 import './global.css';
 import { usePathname } from 'next/navigation';
 
 export default function RootLayout({ children }) {
-  const pathname = usePathname();
+    const pathname = usePathname();
 
-  // Render HomeNavbar only on the homepage ("/"), else render Navbar
-  const isHomePage = pathname === '/';
+    const isHomePage = pathname === '/';
 
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen flex flex-col">
         <SessionProvider>
           {isHomePage ? <HomeNavbar /> : <Navbar />}
-          <main className="pt-[100px]">{children}</main> {/* Ensures no overlap with the header */}
+          <main className="flex-grow pt-[100px]">{children}</main>
+          <Footer />
         </SessionProvider>
       </body>
     </html>

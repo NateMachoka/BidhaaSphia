@@ -31,6 +31,7 @@ const productSchema = new mongoose.Schema(
       ref: 'User', // Link to User schema
       required: true,
     },
+    image: { type: String, required: [true, 'Product image is required'] },
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields

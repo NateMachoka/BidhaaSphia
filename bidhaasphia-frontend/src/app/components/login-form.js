@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from "../components/ui/button"
 import { FormInput } from "../components/ui/form-input"
 import { Alert, AlertDescription } from "../components/ui/alert"
-import { signIn, getSession } from 'next-auth/react'  // Import getSession here
+import { signIn, getSession } from 'next-auth/react'
 import Link from 'next/link'
 
 export function LoginForm() {
@@ -15,31 +15,38 @@ export function LoginForm() {
   const router = useRouter()
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
+    e.preventDefault()
+    setError('')
 
     if (!email || !password) {
-      setError('Please fill in both fields');
-      return;
+      setError('Please fill in both fields')
+      return
     }
 
     const result = await signIn('credentials', {
       email,
       password,
       redirect: false,
-    });
+    })
 
     if (result?.error) {
-      setError(result.error);
+      setError(result.error)
     } else {
-      const session = await getSession(); // Get updated session with the token
+      const session = await getSession() // Get updated session with the token
       if (session?.accessToken) {
         // Store token if needed
-        localStorage.setItem('accessToken', session.accessToken);
+        localStorage.setItem('accessToken', session.accessToken)
       }
-      router.push('/dashboard');
+
+      // Determine the user's role and redirect accordingly
+      const userRole = session?.user?.role // Ensure role is included in the session data
+      if (userRole === 'admin') {
+        router.push('/adminDashboard')
+      } else {
+        router.push('/dashboard')
+      }
     }
-  };
+  }
 
   return (
     <form onSubmit={handleLogin} className="space-y-4">
@@ -69,5 +76,5 @@ export function LoginForm() {
         Don't have an account? <Link href="/register" className="text-primary hover:underline">Register</Link>
       </p>
     </form>
-  );
+  )
 }

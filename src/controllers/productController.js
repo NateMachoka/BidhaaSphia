@@ -10,20 +10,28 @@ export const createProduct = async (req, res) => {
       name, description, price, stock, category, icon,
     } = req.body;
 
-    // Log input to check
+    // Log the request body and file details for debugging
     console.log('Product Data:', req.body);
+    console.log('Uploaded File:', req.file);
 
     // Validate required fields
     if (!name || !price || stock === undefined || !category) {
       return res.status(400).json({ message: 'Name, price, stock, and category are required.' });
     }
 
+    // Validate file upload
+    if (!req.file) {
+      return res.status(400).json({ message: 'Product image is required.' });
+    }
+
     // Check if category exists
     const categoryExists = await Category.findById(category);
-
     if (!categoryExists) {
       return res.status(400).json({ message: 'Category does not exist.' });
     }
+
+    // Construct the image URL
+    const image = `/uploads/${req.file.filename}`;
 
     // Create the product
     const product = new Product({
@@ -33,15 +41,21 @@ export const createProduct = async (req, res) => {
       stock,
       category, // Use category ID
       user: req.user.id, // Logged-in user (admin creating product)
+      image, // Product image
+      icon,
     });
 
+    // Save the product to the database
     const createdProduct = await product.save();
+
+    // Send success response
     res.status(201).json(createdProduct);
   } catch (error) {
-    console.log('Error creating product:', error);
-    res.status(500).json({ message: error.message });
+    console.error('Error creating product:', error);
+    res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
+
 
 // @desc    Get all products
 // @route   GET /api/products
