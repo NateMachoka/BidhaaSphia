@@ -12,10 +12,16 @@ export const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axiosInstance.get('/categories');
-        setCategories(response.data.categories);
+        const categoriesResponse = await axiosInstance.get('/categories');
+        const categoriesWithProducts = await Promise.all(
+          categoriesResponse.data.categories.map(async (category) => {
+            const productsResponse = await axiosInstance.get(`/products?category=${category._id}`);
+            return { ...category, products: productsResponse.data };
+          })
+        );
+        setCategories(categoriesWithProducts);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Error fetching categories or products:', error);
       }
     };
     fetchCategories();
@@ -73,7 +79,7 @@ export const Categories = () => {
                     className="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
                   >
                     <img
-                      src={product.image}
+                      src={`http://localhost:5000${product.image}`}
                       alt={product.name}
                       className="w-full h-24 object-cover rounded-lg"
                     />
@@ -81,6 +87,7 @@ export const Categories = () => {
                   </div>
                 ))}
               </div>
+              {/* See More Link */}
               <Link
                 href={`/category/${category._id}`}
                 className="block bg-blue-100 text-blue-600 text-center py-2 rounded-b-lg hover:bg-blue-200 transition-colors"

@@ -48,3 +48,23 @@ export const getCategories = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Get a specific category by ID
+// @route   GET /api/categories/:id
+// @access  Public
+export const getCategoryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the category by ID
+    const category = await Category.findById(id);
+
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found.' });
+    }
+
+    res.json(category);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

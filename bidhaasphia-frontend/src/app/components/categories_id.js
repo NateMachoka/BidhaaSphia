@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -38,6 +38,11 @@ const CategoryPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
         {products.map((product) => (
           <div key={product._id} className="bg-gray-200 p-6 rounded-lg text-center">
+            <img
+              src={`http://localhost:5000${product.image}`}
+              alt={product.name}
+              className="w-full h-40 object-cover rounded-lg mb-4"
+            />
             <h2 className="text-lg font-semibold">{product.name}</h2>
             <p>{product.description}</p>
           </div>

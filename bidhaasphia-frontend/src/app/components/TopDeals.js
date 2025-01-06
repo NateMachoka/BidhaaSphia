@@ -61,7 +61,7 @@ export const TopDeals = () => {
               className="flex-shrink-0 bg-white hover:shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out rounded-lg shadow-sm w-[250px] snap-center"
             >
               <img
-                src={deal.image}
+                src={`http://localhost:5000${deal.image}`}
                 alt={deal.name}
                 className="w-full h-40 object-cover rounded-t-lg"
               />
