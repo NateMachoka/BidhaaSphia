@@ -3,10 +3,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axiosInstance from '../utils/axiosInstance';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export const TopDeals = () => {
   const [deals, setDeals] = useState([]);
   const scrollContainerRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDeals = async () => {
@@ -27,6 +29,19 @@ export const TopDeals = () => {
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth',
       });
+    }
+  };
+
+  const addToCart = async (productId) => {
+    try {
+      await axiosInstance.post(
+        '/cart/add',
+        { productId, quantity: 1 },
+        { withCredentials: true }
+      );
+      router.push('/cart'); // Navigate to the cart page after adding
+    } catch (error) {
+      console.error('Error adding to cart:', error);
     }
   };
 
@@ -78,6 +93,7 @@ export const TopDeals = () => {
                     </span>
                   </div>
                   <button
+                    onClick={() => addToCart(deal._id)}
                     className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
                     aria-label="Add to Cart"
                   >

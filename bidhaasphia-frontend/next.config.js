@@ -1,12 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5000',
+        pathname: '/uploads/**',
+      },
+    ],
+  },
   webpack(config) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
-      readline: false, // Disable readline for browser
-      fs: false,       // Disable fs for browser
-      path: false,     // Disable path for browser
-      child_process: false, // Disable child_process for browser
+      readline: false,
+      fs: false,
+      path: false,
+      child_process: false,
     };
     return config;
   },

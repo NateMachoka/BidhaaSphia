@@ -12,7 +12,6 @@ export default function Dashboard() {
       <Categories />
       <TopDeals />
       <MostPopular />
-      <ProfessionalServices />
     </div>
   );
 }

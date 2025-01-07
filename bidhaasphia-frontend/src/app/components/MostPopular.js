@@ -30,14 +30,30 @@ export const MostPopular = () => {
     }
   };
 
+  const addToCart = async (productId) => {
+    try {
+      await axiosInstance.post(
+        '/cart/add',
+        { productId },
+        { withCredentials: true }
+      );
+      console.log('Product added to cart');
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  };
+
   return (
     <section className="space-y-6">
       {/* Section Header */}
       <div className="flex items-center justify-between px-4">
         <h2 className="text-2xl font-bold tracking-tight">Most Popular</h2>
-        <button className="text-blue-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-md">
+        <a
+          href="/products"
+          className="text-blue-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-md"
+        >
           See all popular products
-        </button>
+        </a>
       </div>
 
       {/* Scrollable Container */}
@@ -71,6 +87,7 @@ export const MostPopular = () => {
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-green-600 font-bold">${product.price}</span>
                   <button
+                    onClick={() => addToCart(product._id)}
                     className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
                     aria-label="Add to Cart"
                   >

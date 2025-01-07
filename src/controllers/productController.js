@@ -157,24 +157,26 @@ export const searchProductsByName = async (req, res) => {
   }
 };
 
+// Top Deals
 export const getTopDeals = async (req, res) => {
   try {
-    const products = await Product.find();
-    // Pick random products as "top deals"
-    const topDeals = products.sort(() => 0.5 - Math.random()).slice(0, 10);
-    res.json({ deals: topDeals });
+    const products = await Product.aggregate([
+      { $sample: { size: 12 } }, // Randomly selects 12 products
+    ]);
+    res.json({ deals: products });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching top deals', error });
   }
 };
 
+
 // Fetch most popular products (mocked for now)
 export const getMostPopular = async (req, res) => {
   try {
-    const products = await Product.find();
-    // Pick random products as "most popular"
-    const mostPopular = products.sort(() => 0.5 - Math.random()).slice(0, 12);
-    res.json({ products: mostPopular });
+    const products = await Product.aggregate([
+      { $sample: { size: 10 } }, // Randomly selects 12 products
+    ]);
+    res.json({ products });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching most popular products', error });
   }

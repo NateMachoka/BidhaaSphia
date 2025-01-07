@@ -86,7 +86,7 @@ export const Navbar = () => {
                   <Menu.Item>
                     {({ active }) => (
                       <Link
-                        href="/orders"
+                        href="/order-confirmation"
                         className={`block px-4 py-2 ${active ? 'bg-gray-100' : ''}`}
                       >
                         <FaBoxOpen className="inline-block mr-2" /> Orders

@@ -67,26 +67,32 @@ export const Categories = () => {
           {categories.map((category) => (
             <div
               key={category._id}
-              className="flex-shrink-0 bg-gray-50 hover:shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out rounded-lg shadow-sm w-[280px] snap-center"
+              className="flex-shrink-0 bg-gray-50 hover:shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out rounded-lg shadow-sm w-[280px] snap-center flex flex-col justify-between"
             >
+              {/* Category Header */}
               <h3 className="text-lg font-semibold text-center bg-gray-100 py-2 rounded-t-lg">
                 {category.category}
               </h3>
-              <div className="grid grid-cols-2 gap-2 p-4">
-                {category.products?.slice(0, 4).map((product) => (
-                  <div
-                    key={product._id}
-                    className="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <img
-                      src={`http://localhost:5000${product.image}`}
-                      alt={product.name}
-                      className="w-full h-24 object-cover rounded-lg"
-                    />
-                    <h4 className="text-sm font-medium mt-2">{product.name}</h4>
-                  </div>
-                ))}
+
+              {/* Product Grid */}
+              <div className="flex-grow">
+                <div className="grid grid-cols-2 gap-2 p-4">
+                  {category.products?.slice(0, 4).map((product) => (
+                    <div
+                      key={product._id}
+                      className="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <img
+                        src={`http://localhost:5000${product.image}`}
+                        alt={product.name}
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                      <h4 className="text-sm font-medium mt-2">{product.name}</h4>
+                    </div>
+                  ))}
+                </div>
               </div>
+
               {/* See More Link */}
               <Link
                 href={`/category/${category._id}`}

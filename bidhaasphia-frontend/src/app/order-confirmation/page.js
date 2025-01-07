@@ -10,7 +10,7 @@ export default function OrderConfirmation() {
       <h1 className="text-2xl font-bold mb-4">Order Placed Successfully!</h1>
       <p className="mb-6">Thank you for your order. We'll process it as soon as possible.</p>
       <button
-        onClick={() => router.push('/')}
+        onClick={() => router.push('/dashboard')}
         className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
       >
         Back to Home
