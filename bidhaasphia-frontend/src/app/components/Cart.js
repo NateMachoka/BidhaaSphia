@@ -1,68 +1,62 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import axiosInstance from '../utils/axiosInstance'
-import { useRouter } from 'next/navigation'
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '../utils/axiosInstance';
+import { useRouter } from 'next/navigation';
 
-interface CartItem {
-  productId: string
-  name: string
-  quantity: number
-}
-
-export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-  const router = useRouter()
+const CartPage = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
-    fetchCart()
-  }, [])
+    fetchCart();
+  }, []);
 
   const fetchCart = async () => {
     try {
       const response = await axiosInstance.get('/cart/view', {
         withCredentials: true,
-      })
-      setCartItems(response.data.data)
+      });
+      setCartItems(response.data.data);
     } catch (error) {
-      console.error('Error fetching cart:', error)
+      console.error('Error fetching cart:', error);
     }
-  }
+  };
 
-  const removeFromCart = async (productId: string) => {
+  const removeFromCart = async (productId) => {
     try {
       await axiosInstance.delete('/cart/remove', {
         data: { productId },
         withCredentials: true,
-      })
-      fetchCart() // Refresh the cart after removal
+      });
+      fetchCart(); // Refresh the cart after removal
     } catch (error) {
-      console.error('Error removing from cart:', error)
+      console.error('Error removing from cart:', error);
     }
-  }
+  };
 
   const clearCart = async () => {
     try {
       await axiosInstance.delete('/cart/removeAll', {
         withCredentials: true,
-      })
-      setCartItems([]) // Clear cart locally
+      });
+      setCartItems([]); // Clear cart locally
     } catch (error) {
-      console.error('Error clearing cart:', error)
+      console.error('Error clearing cart:', error);
     }
-  }
+  };
 
   const placeOrder = async () => {
     try {
       const response = await axiosInstance.post('/orders/place', {}, {
         withCredentials: true,
-      })
-      console.log('Order placed:', response.data)
-      router.push('/order-confirmation') // Navigate to order confirmation
+      });
+      console.log('Order placed:', response.data);
+      router.push('/order-confirmation'); // Navigate to order confirmation
     } catch (error) {
-      console.error('Error placing order:', error)
+      console.error('Error placing order:', error);
     }
-  }
+  };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
@@ -104,5 +98,7 @@ export default function Cart() {
         </>
       )}
     </div>
-  )
-}
+  );
+};
+
+export default CartPage;
