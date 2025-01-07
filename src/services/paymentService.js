@@ -52,7 +52,7 @@ export const initiateMPesaPayment = async (order, phoneNumber) => {
         TransactionType: 'CustomerPayBillOnline',
         Amount: order.totalPrice,
         PartyA: phoneNumber,
-        PartyB: process.env.MPESA_BUSINESS_SHORTCODE, // PartyB is usually the same as BusinessShortCode
+        PartyB: process.env.MPESA_BUSINESS_SHORTCODE, // PartyB the same as BusinessShortCode
         PhoneNumber: phoneNumber,
         CallBackURL: 'https://425e-102-209-90-18.ngrok-free.app/api/orders/mpesa-callback',
         AccountReference: transactionId,

@@ -5,8 +5,6 @@ import Category from '../models/Category.js';
 // @route   POST /api/products
 // @access  Private/Admin
 export const createProduct = async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
   try {
     const { name, description, price, stock, category } = req.body;
     const image = req.file ? req.file.filename : null; // Get the image filename from req.file
