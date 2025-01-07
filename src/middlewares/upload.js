@@ -2,20 +2,20 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-// Use import.meta.url to get the directory of the current file
-const uploadPath = path.join(new URL(import.meta.url).pathname, '../uploads/');
+// Define the absolute path to the uploads directory
+const uploadDirectory = path.join(process.cwd(), 'src/uploads');
 
-// Convert the file URL to a filesystem path (as it's in URL format in ES Modules)
-const uploadDirectory = decodeURIComponent(uploadPath).replace(/^\/|\/$/g, '');
-
-// Ensure the 'uploads' directory exists
+// Check if the 'uploads' directory exists
 if (!fs.existsSync(uploadDirectory)) {
-  fs.mkdirSync(uploadDirectory, { recursive: true });
+  console.error(`Error: Upload directory "${uploadDirectory}" does not exist.`);
 }
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDirectory); // Save files in the uploads directory
+    if (!fs.existsSync(uploadDirectory)) {
+      return cb(new Error(`Upload directory "${uploadDirectory}" does not exist.`));
+    }
+    cb(null, uploadDirectory); // Save files in the src/uploads directory
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}${path.extname(file.originalname)}`);
