@@ -4,7 +4,7 @@ import axios from 'axios/lib/axios';
 
 // Create an Axios instance with a base URL for the API
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://bidhaa-sphia-pmb5ccojk-natemachoka-gmailcoms-projects.vercel.app/api', // Update this to your production backend
 });
 
 // Add a request interceptor to attach the token from localStorage to the headers
@@ -27,7 +27,7 @@ const refreshToken = async () => {
   try {
     const refreshToken = localStorage.getItem('refreshToken'); // Get refresh token from localStorage
 
-    const response = await axios.post('http://localhost:5000/api/users/refresh', {
+    const response = await axios.post('https://bidhaa-sphia-pmb5ccojk-natemachoka-gmailcoms-projects.vercel.app/api/users/refresh', {
       token: refreshToken, // Send the refresh token to the server
     });
 
