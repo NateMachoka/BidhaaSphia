@@ -17,7 +17,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    // Handle request error
+    // Handle request error without logging sensitive information
     return Promise.reject(error);
   }
 );
@@ -26,19 +26,17 @@ axiosInstance.interceptors.request.use(
 const refreshToken = async () => {
   try {
     const refreshToken = localStorage.getItem('refreshToken'); // Get refresh token from localStorage
-    console.log('Sending refresh token:', refreshToken); // Optional: log for debugging
 
     const response = await axios.post('http://localhost:5000/api/users/refresh', {
       token: refreshToken, // Send the refresh token to the server
     });
 
     const { accessToken } = response.data; // Get the new access token
-    console.log('Received new access token:', accessToken); // Optional: log for debugging
 
     localStorage.setItem('accessToken', accessToken); // Save the new access token to localStorage
     return accessToken; // Return the new token
   } catch (error) {
-    console.error('Error refreshing token:', error.response?.data || error.message); // Log the error
+    // Handle error without logging sensitive information
     throw error; // Rethrow error if refresh fails
   }
 };

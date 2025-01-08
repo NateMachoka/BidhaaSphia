@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import axiosInstance from '../utils/axiosInstance';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -82,9 +83,11 @@ export const Categories = () => {
                       key={product._id}
                       className="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
                     >
-                      <img
+                      <Image
                         src={`http://localhost:5000${product.image}`}
                         alt={product.name}
+                        width={100}
+                        height={96}
                         className="w-full h-24 object-cover rounded-lg"
                       />
                       <h4 className="text-sm font-medium mt-2">{product.name}</h4>
