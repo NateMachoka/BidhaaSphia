@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -18,8 +19,12 @@ const CartPage = () => {
         withCredentials: true,
       });
       setCartItems(response.data.data);
+      setErrorMessage(''); // Clear error message if successful
     } catch (error) {
-      console.error('Error fetching cart:', error);
+      setErrorMessage('Error fetching cart. Please try again later.');
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching cart:', error); // Log only in development
+      }
     }
   };
 
@@ -30,8 +35,12 @@ const CartPage = () => {
         withCredentials: true,
       });
       fetchCart(); // Refresh the cart after removal
+      setErrorMessage(''); // Clear error message if successful
     } catch (error) {
-      console.error('Error removing from cart:', error);
+      setErrorMessage('Error removing item from cart. Please try again.');
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error removing from cart:', error);
+      }
     }
   };
 
@@ -41,26 +50,36 @@ const CartPage = () => {
         withCredentials: true,
       });
       setCartItems([]); // Clear cart locally
+      setErrorMessage(''); // Clear error message if successful
     } catch (error) {
-      console.error('Error clearing cart:', error);
+      setErrorMessage('Error clearing cart. Please try again.');
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error clearing cart:', error);
+      }
     }
   };
 
   const placeOrder = async () => {
     try {
-      const response = await axiosInstance.post('/orders/place', {}, {
+      await axiosInstance.post('/orders/place', {}, {
         withCredentials: true,
       });
-      console.log('Order placed:', response.data);
+      setErrorMessage(''); // Clear error message if successful
       router.push('/order-confirmation'); // Navigate to order confirmation
     } catch (error) {
-      console.error('Error placing order:', error);
+      setErrorMessage('Error placing order. Please try again.');
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error placing order:', error);
+      }
     }
   };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
+      {errorMessage && (
+        <p className="text-red-600 mb-4">{errorMessage}</p>
+      )}
       {cartItems.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (

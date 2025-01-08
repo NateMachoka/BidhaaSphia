@@ -50,24 +50,28 @@ const handleSubmit = async (e) => {
 
   formDataToSend.append('user', user);
 
-  // Log for debugging
-  console.log('FormData being sent:');
-  for (let [key, value] of formDataToSend.entries()) {
-    console.log(`${key}:`, value);
-  }
-
   try {
     const response = await axiosInstance.post('/products', formDataToSend, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-    console.log('Product created:', response.data);
+
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('FormData being sent:');
+      for (let [key, value] of formDataToSend.entries()) {
+        console.warn(`${key}:`, value);
+      }
+
+      console.warn('Product created:', response.data);
+    }
   } catch (error) {
     setError('Error creating product');
 
-    console.error('Error response status:', error.response?.status);
-    console.error('Error response data:', error.response?.data);
-    console.error('Error response headers:', error.response?.headers);
-    console.error('Full error object:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error response status:', error.response?.status);
+      console.error('Error response data:', error.response?.data);
+      console.error('Error response headers:', error.response?.headers);
+      console.error('Full error object:', error);
+    }
   }
 };
 

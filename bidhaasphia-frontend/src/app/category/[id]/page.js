@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import { Loader2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from '../../components/ui/button';
+import { Card } from '../../components/ui/card';
 
 const CategoryPage = () => {
   const { id } = useParams();
@@ -20,26 +20,26 @@ const CategoryPage = () => {
 
   useEffect(() => {
     if (id) {
+      const fetchCategoryAndProducts = async () => {
+        try {
+          setLoading(true);
+          const [categoryResponse, productsResponse] = await Promise.all([
+            axiosInstance.get(`/categories/${id}`),
+            axiosInstance.get(`/products?categories=${id}`),
+          ]);
+          setCategory(categoryResponse.data);
+          setProducts(productsResponse.data);
+        } catch (error) {
+          console.error('Error fetching category or products:', error);
+          toast.error('Failed to load category and products. Please try again.');
+        } finally {
+          setLoading(false);
+        }
+      };
+
       fetchCategoryAndProducts();
     }
   }, [id]);
-
-  const fetchCategoryAndProducts = async () => {
-    try {
-      setLoading(true);
-      const [categoryResponse, productsResponse] = await Promise.all([
-        axiosInstance.get(`/categories/${id}`),
-        axiosInstance.get(`/products?categories=${id}`),
-      ]);
-      setCategory(categoryResponse.data);
-      setProducts(productsResponse.data);
-    } catch (error) {
-      console.error('Error fetching category or products:', error);
-      toast.error('Failed to load category and products. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const addToCart = async (productId) => {
     try {

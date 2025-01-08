@@ -59,7 +59,7 @@ export const Navbar = () => {
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, [status]);
+  }, [status, promotions.length]); // Add 'promotions.length' to dependency array
 
   return (
     <header className="bg-white shadow-sm">

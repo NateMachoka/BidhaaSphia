@@ -32,19 +32,19 @@ export const MostPopular = () => {
       });
     }
   };
-
   const addToCart = async (productId) => {
-    try {
-      await axiosInstance.post(
-        '/cart/add',
-        { productId },
-        { withCredentials: true }
-      );
-      console.log('Product added to cart');
-    } catch (error) {
-      console.error('Error adding product to cart:', error);
-    }
-  };
+  try {
+    await axiosInstance.post(
+      '/cart/add',
+      { productId },
+      { withCredentials: true }
+    );
+    // Show a success message or update the UI
+    alert('Product added to cart successfully!');
+  } catch (error) {
+    setErrorMessage('Unable to add the product to the cart. Please try again.');
+  }
+};
 
   return (
     <section className="space-y-6">

@@ -1,7 +1,8 @@
-'use client';
+'use client'
 
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../utils/axiosInstance';
+import Image from 'next/image';
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -30,9 +31,11 @@ const ProductsPage = () => {
             key={product._id}
             className="flex-shrink-0 bg-white hover:shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out rounded-lg shadow-sm w-[250px]"
           >
-            <img
+            <Image
               src={`http://localhost:5000${product.image}`}
               alt={product.name}
+              width={500} // Adjust the width
+              height={200} // Adjust the height
               className="w-full h-40 object-cover rounded-t-lg"
             />
             <div className="p-4">

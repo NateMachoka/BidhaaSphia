@@ -1,11 +1,11 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import React from 'react';
+import React, { Suspense } from 'react';
 import Image from 'next/image';
 import { Loader2, ShoppingBag } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from '../components/ui/button';
+import { Card } from '../components/ui/card';
 import axiosInstance from '../utils/axiosInstance';
 import { toast } from 'react-hot-toast';
 
@@ -99,4 +99,11 @@ const ResultsPage = () => {
   );
 };
 
-export default ResultsPage;
+// Wrap ResultsPage with Suspense
+const ResultsPageWithSuspense = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <ResultsPage />
+  </Suspense>
+);
+
+export default ResultsPageWithSuspense;
