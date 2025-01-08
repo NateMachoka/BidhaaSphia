@@ -1,5 +1,3 @@
-// src/app/components/ui/alert.js
-
 export function Alert({ children, type = 'info' }) {
   const alertStyles = {
     info: 'bg-blue-100 text-blue-700',
