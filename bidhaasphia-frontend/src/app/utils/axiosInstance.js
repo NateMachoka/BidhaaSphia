@@ -1,6 +1,6 @@
 'use client'
 
-import axios from 'axios';
+import axios from 'axios/lib/axios';
 
 // Create an Axios instance with a base URL for the API
 const axiosInstance = axios.create({
