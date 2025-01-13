@@ -1,16 +1,15 @@
 import Link from 'next/link';
 import { Button } from "./components/ui/button";
-import { Card, CardContent } from "./components/ui/card";
-import { ArrowRight, ShoppingBag, Users, CreditCard, LogIn, UserPlus } from 'lucide-react';
-import { MostPopular } from './components/MostPopular';
+import { ShoppingBag, LogIn, UserPlus, Users, CreditCard } from 'lucide-react';
+import { FeaturedProducts } from './components/FeaturedProducts';
 
 export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Header with Login/Register */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/login" className="text-2xl font-bold text-purple-600">BidhaaSphia</Link>
+          <Link href="/" className="text-2xl font-bold text-purple-600">BidhaaSphia</Link>
           <div className="space-x-2">
             <Button asChild variant="outline" size="sm">
               <Link href="/login">
@@ -49,7 +48,7 @@ export default function HomePage() {
       <section className="py-16 bg-gray-100">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Featured Products</h2>
-          <MostPopular />
+          <FeaturedProducts />
         </div>
       </section>
 
@@ -83,7 +82,9 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold mb-4">Ready to Start Shopping?</h2>
           <p className="text-xl mb-8">Sign up now and get 10% off your first purchase!</p>
           <Button asChild size="lg" className="bg-white text-purple-600 hover:bg-gray-100">
-            <Link href="/register">Sign Up Now</Link>
+            <Link href="/register">
+              Sign Up Now <UserPlus className="ml-2 h-5 w-5" />
+            </Link>
           </Button>
         </div>
       </section>

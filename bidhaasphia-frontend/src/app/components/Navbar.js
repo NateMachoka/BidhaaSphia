@@ -41,8 +41,8 @@ export const Navbar = () => {
 
     const fetchCartItemCount = async () => {
       try {
-        const response = await axiosInstance.get('/cart', { withCredentials: true });
-        setCartItemCount(response.data.items.length);
+        const response = await axiosInstance.get('/cart/view', { withCredentials: true });
+        setCartItemCount(response.data.data?.length || 0);
       } catch (error) {
         console.error('Error fetching cart items:', error);
       }
@@ -83,16 +83,9 @@ export const Navbar = () => {
                   </Menu.Item>
                   <Menu.Item>
                     {({ active }) => (
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <button className={`w-full text-left px-4 py-2 ${active ? 'bg-purple-100' : ''}`}>
-                            <FaBoxOpen className="inline-block mr-2" /> Orders
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80">
-                          <OrderHistory />
-                        </PopoverContent>
-                      </Popover>
+                      <Link href="/order-history" className={`block px-4 py-2 ${active ? 'bg-purple-100' : ''}`}>
+                        <FaBoxOpen className="inline-block mr-2" /> Orders
+                      </Link>
                     )}
                   </Menu.Item>
                   <Menu.Item>

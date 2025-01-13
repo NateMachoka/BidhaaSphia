@@ -8,7 +8,7 @@ import axiosInstance from '../../utils/axiosInstance';
 import { Loader2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Button } from '../../components/ui/button';
-import { Card } from '../../components/ui/card';
+import { Card, CardContent } from '../../components/ui/card';
 
 const CategoryPage = () => {
   const { id } = useParams();

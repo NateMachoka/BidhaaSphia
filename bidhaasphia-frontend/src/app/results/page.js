@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Loader2, ShoppingBag } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
+import { CardContent } from '../components/ui/card';
 import axiosInstance from '../utils/axiosInstance';
 import { toast } from 'react-hot-toast';
 

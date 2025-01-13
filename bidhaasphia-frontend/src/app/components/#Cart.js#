@@ -59,6 +59,37 @@ const CartPage = () => {
     }
   };
 
+const placeOrder = async () => {
+  try {
+    // Format the cart items
+    const formattedCartItems = cartItems.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+    }));
+
+    console.log('Formatted cart items:', formattedCartItems);
+
+    // Send request to place the order
+    const response = await axiosInstance.post(
+      '/orders/place',
+      { products: formattedCartItems },
+      { withCredentials: true }
+    );
+
+    console.log('Order placed successfully:', response.data);
+
+    // Redirect on success
+    setErrorMessage('');
+    router.push('/order-confirmation?status=placed');
+  } catch (error) {
+    console.error('Error placing order:', error.response?.data || error.message);
+    setErrorMessage(
+      error.response?.data?.message || 'Error placing order. Please try again.'
+    );
+  }
+};
+
+
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
@@ -93,10 +124,10 @@ const CartPage = () => {
               Clear Cart
             </button>
             <button
-              onClick={() => router.push('/order-history')}  // Navigate to Order History
-              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+              onClick={placeOrder}
+              className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
             >
-              Go to Orders
+              Place Order
             </button>
           </div>
         </>
