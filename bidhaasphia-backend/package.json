@@ -2,10 +2,10 @@
   "name": "bidhaasphia",
   "version": "1.0.0",
   "description": "BidhaaSphia is an e-commerce backend system handling user registration, product management, shopping cart, order processing, and payment integration.",
-  "main": "src/server.js",
+  "main": "src/api/index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "start": "dotenv -e .env.production node src/api/index.js",
+    "dev": "dotenv -e .env.development nodemon src/api/index.js",
     "test": "mocha --require @babel/register --recursive",
     "lint": "eslint src"
   },
@@ -34,6 +34,7 @@
     "@eslint/js": "^9.17.0",
     "babel-eslint": "^10.1.0",
     "chai": "^4.3.7",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.31.0",

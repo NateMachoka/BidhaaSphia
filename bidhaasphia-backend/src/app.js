@@ -26,10 +26,11 @@ const __dirname = path.dirname(__filename);
 
 // Middleware
 app.use(express.json()); // Parse JSON requests
+
 // CORS configuration
 const corsOptions = {
   origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true, // Allow cookies or authentication credentials
 };
@@ -47,9 +48,17 @@ app.use(
 );
 
 app.use(cors(corsOptions)); // Enable CORS
-// Initialize Redis and MongoDB
-connectDB();
-connectRedis();
+
+// Middleware to ensure MongoDB and Redis are connected
+app.use(async (req, res, next) => {
+  try {
+    await connectDB(); // Ensures MongoDB is connected
+    await connectRedis(); // Ensures Redis is connected
+    next();
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to initialize services', error: error.message });
+  }
+});
 
 // Health check endpoint
 app.get('/', (req, res) => res.send('Welcome to BidhaaSphia!'));
