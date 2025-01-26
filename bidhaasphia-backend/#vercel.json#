@@ -3,7 +3,10 @@
   "builds": [
     {
       "src": "src/api/index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "helpers": true
+      }
     }
   ],
   "routes": [
@@ -12,5 +15,5 @@
       "dest": "src/api/index.js"
     }
   ],
-  "devCommand": "node src/api/index.js"
+  "devCommand": "node start-dev.js"
 }

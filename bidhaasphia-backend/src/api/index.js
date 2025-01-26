@@ -1,29 +1,48 @@
-import app from '../app.js';
-import connectDB from '../config/db.js';
-import { connectRedis } from '../config/redis.js';
+import dotenv from 'dotenv';
+import app from '../app.js'; // Import the Express app
+import connectDB from '../config/db.js'; // MongoDB connection
+import { connectRedis } from '../config/redis.js'; // Redis connection
 
-if (process.env.NODE_ENV !== 'production') {
-  // Local testing with Express
+// Load environment variables
+dotenv.config({ path: '.env.development' });
+
+// Check if the variables are being set correctly
+console.log('Mongo URI:', process.env.MONGO_URI);
+console.log('Redis URL:', process.env.REDIS_URL);
+
+if (process.env.NODE_ENV === 'production') {
+  // For production (serverless on Vercel)
+  module.exports = async (req, res) => {
+    try {
+      // Ensure MongoDB and Redis are connected
+      await connectDB();
+      await connectRedis();
+      // Use Express's handle method for serverless functions
+      app(req, res);
+    } catch (error) {
+      console.error('Error handling request:', error.message);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
+} else {
+  // For local development (non-serverless)
   const PORT = process.env.PORT || 5000;
 
-  // Ensure MongoDB and Redis are connected
   const startServer = async () => {
     try {
-      await connectDB(); // Connect to MongoDB
-      await connectRedis(); // Connect to Redis
+      // Connect to MongoDB and Redis
+      await connectDB();
+      await connectRedis();
+      // Start Express server locally
       app.listen(PORT, () => {
-        console.log(`Server running locally on port ${PORT}`);
+        console.log(`Development server running at http://localhost:${PORT}`);
       });
     } catch (error) {
       console.error('Failed to initialize services:', error.message);
-      process.exit(1); // Exit if services fail to connect
+      process.exit(1);
     }
   };
 
   startServer();
-} else {
-  // Vercel serverless function
-  export default async (req, res) => {
-    await app.handle(req, res);
-  };
 }
