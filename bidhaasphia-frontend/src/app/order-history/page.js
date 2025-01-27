@@ -32,39 +32,15 @@ export default function OrderHistoryPage() {
     }
   };
 
-  const cancelOrder = async (orderId) => {
-    try {
-      const response = await axiosInstance.patch(`/orders/cancel/${orderId}`, {
-        reason: 'Customer request',
-      }, {
-        withCredentials: true,
-      });
-      toast.success('Order cancelled successfully');
-      router.push('/order-confirmation?status=cancelled');
-    } catch (error) {
-      console.error('Error cancelling order:', error.response ? error.response.data : error);
-      if (error.response && error.response.data.message) {
-        toast.error(error.response.data.message); // Display backend message
-      } else {
-        toast.error('Failed to cancel order. Please try again.');
-      }
-    }
-  };
-
   const placeOrder = async (orderId) => {
   try {
-    const order = orders.find(order => order._id === orderId);
+    const order = orders.find((order) => order._id === orderId);
 
-    // Check if the order has products (this assumes there's a `products` array or similar structure)
     if (!order.products || order.products.length === 0) {
       throw new Error('This order has no products and cannot be placed.');
     }
 
-    const orderData = {
-      orderId: orderId,
-    };
-
-    console.log('Placing order with data:', orderData);
+    const orderData = { orderId };
 
     const response = await axiosInstance.post(
       '/orders/place',
@@ -72,12 +48,9 @@ export default function OrderHistoryPage() {
       { withCredentials: true }
     );
 
-    console.log('Order placed successfully:', response.data);
-
     toast.success('Order placed successfully');
     router.push('/order-confirmation?status=placed');
   } catch (error) {
-    console.error('Error placing order:', error.response?.data || error.message);
     toast.error(error.response?.data?.message || error.message || 'Error placing order. Please try again.');
   }
 };

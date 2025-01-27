@@ -6,10 +6,6 @@ import { connectRedis } from '../config/redis.js'; // Redis connection
 // Load environment variables
 dotenv.config({ path: '.env.development' });
 
-// Check if the variables are being set correctly
-console.log('Mongo URI:', process.env.MONGO_URI);
-console.log('Redis URL:', process.env.REDIS_URL);
-
 if (process.env.NODE_ENV === 'production') {
   // For production (serverless on Vercel)
   module.exports = async (req, res) => {
